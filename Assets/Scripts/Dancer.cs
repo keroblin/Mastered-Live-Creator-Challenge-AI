@@ -1,6 +1,8 @@
+using Cinemachine.Utility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Dancer : MonoBehaviour
 {
@@ -10,11 +12,12 @@ public class Dancer : MonoBehaviour
     public PesterState pester = new PesterState();
     public PerformState perform = new PerformState();
 
+    public float confidenceDistance = 30f;
+    public NavMeshAgent agent;
     public Animator anim;
     public GameObject player;
     public Collider col;
     public RaycastHit hit;
-
 
     void Start()
     {
@@ -25,42 +28,76 @@ public class Dancer : MonoBehaviour
     void Update()
     {
         currentState.UpdateState(this);
-        //might do look at functionality here, might not
-
-        //might do dot product here instead?
-        int layerMask = 1 << 6;
-
-        if (Physics.Raycast(player.transform.position, player.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity,layerMask))
-        {
-            if(hit.collider == col)
-            {
-                Debug.DrawRay(player.transform.position, player.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-                Debug.Log("Looking at");
-                currentState.LookedAt(this);
-            }
-            else
-            {
-                Debug.DrawRay(player.transform.position, player.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-                Debug.Log("Looking away");
-                currentState.LookedAwayFrom(this);
-            }
-        }
-        else
-        {
-            Debug.DrawRay(player.transform.position, player.transform.TransformDirection(Vector3.forward) * 1000, Color.red);
-            Debug.Log("Looking away");
-            currentState.LookedAwayFrom(this);
-        }
     }
 
     public void SwitchState(State state)
     {
-        Debug.Log("State switched to " + state);
-        if(currentState != null)
+        if(state != currentState)
         {
-            currentState.ExitState(this);
+            Debug.Log("State switched to " + state);
+            if (currentState != null)
+            {
+                currentState.ExitState(this);
+            }
+            currentState = state;
+            currentState.StartState(this);
         }
-        currentState = state;
-        currentState.StartState(this);
+    }
+
+    public bool CheckLook()
+    {
+        if (Physics.Raycast(player.transform.position, player.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
+        {
+            if (hit.collider == col)
+            {
+                Debug.DrawRay(player.transform.position, player.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public float GetDistance()
+    {
+        return Vector3.Distance(gameObject.transform.position, player.transform.position);
+    }
+
+    public float GetPlayerDirection()
+    {
+        Vector3 dir = (transform.position - player.transform.position).normalized;
+        float direction = Vector3.Dot(dir, player.transform.forward);
+        return direction;
+    }
+
+    public void CheckDanceLevel()
+    {
+        float dir = GetPlayerDirection();
+        if (GetDistance() < confidenceDistance && dir > .8f)
+        {
+            if (CheckLook())
+            {
+                SwitchState(hype);
+                return;
+            }
+            
+            if(dir > 0.9)
+            {
+                SwitchState(perform);
+                return;
+            }
+            else if(dir > 0.8)
+            {
+                SwitchState(shy);
+                return;
+            }
+        }
+        else if(GetDistance() > confidenceDistance && dir < .8f)
+        {
+            SwitchState(pester);
+        }
     }
 }

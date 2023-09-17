@@ -6,20 +6,14 @@ public class HypeState : State
 {
     public override void StartState(Dancer dancer)
     {
-
+        dancer.anim.Play("Hype");
     }
     public override void UpdateState(Dancer dancer)
     {
-
-    }
-
-    public override void LookedAt(Dancer dancer)
-    {
-        
-    }
-    public override void LookedAwayFrom(Dancer dancer)
-    {
-
+        if (!dancer.CheckLook() || dancer.GetDistance() > dancer.confidenceDistance)
+        {
+            dancer.CheckDanceLevel();
+        }
     }
 
     public override void ExitState(Dancer dancer)

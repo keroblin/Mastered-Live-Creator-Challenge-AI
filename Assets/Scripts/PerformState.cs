@@ -10,15 +10,7 @@ public class PerformState : State
     }
     public override void UpdateState(Dancer dancer)
     {
-
-    }
-    public override void LookedAt(Dancer dancer)
-    {
-
-    }
-    public override void LookedAwayFrom(Dancer dancer)
-    {
-        dancer.SwitchState(dancer.shy);
+        dancer.CheckDanceLevel();
     }
     public override void ExitState(Dancer dancer)
     {

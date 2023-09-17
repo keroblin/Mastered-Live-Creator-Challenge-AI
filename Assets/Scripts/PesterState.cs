@@ -6,22 +6,21 @@ public class PesterState : State
 {
     public override void StartState(Dancer dancer)
     {
-
+        dancer.anim.Play("Panic");
     }
     public override void UpdateState(Dancer dancer)
     {
-
-    }
-    public override void LookedAt(Dancer dancer)
-    {
-
-    }
-    public override void LookedAwayFrom(Dancer dancer)
-    {
-
+        if (dancer.GetDistance() > dancer.confidenceDistance)
+        {
+            dancer.agent.SetDestination(dancer.gameObject.transform.position);
+        }
+        else
+        {
+            dancer.CheckDanceLevel();
+        }
     }
     public override void ExitState(Dancer dancer)
     {
-
+        dancer.agent.SetDestination(dancer.gameObject.transform.position);
     }
 }
