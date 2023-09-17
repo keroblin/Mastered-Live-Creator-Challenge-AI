@@ -12,6 +12,14 @@ public class PesterState : State
     {
 
     }
+    public override void LookedAt(Dancer dancer)
+    {
+
+    }
+    public override void LookedAwayFrom(Dancer dancer)
+    {
+
+    }
     public override void ExitState(Dancer dancer)
     {
 
