@@ -46,11 +46,11 @@ public class Dancer : MonoBehaviour
 
     public bool CheckLook()
     {
-        if (Physics.Raycast(player.transform.position, player.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
         {
             if (hit.collider == col)
             {
-                Debug.DrawRay(player.transform.position, player.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
                 return true;
             }
             else
@@ -63,7 +63,7 @@ public class Dancer : MonoBehaviour
 
     public float GetDistance()
     {
-        return Vector3.Distance(gameObject.transform.position, player.transform.position);
+        return Vector3.Distance(gameObject.transform.position, Camera.main.transform.position);
     }
 
     public float GetPlayerDirection()
