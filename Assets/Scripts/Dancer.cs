@@ -95,7 +95,7 @@ public class Dancer : MonoBehaviour
                 return;
             }
         }
-        else if(GetDistance() > confidenceDistance && dir < .8f)
+        else
         {
             SwitchState(pester);
         }
